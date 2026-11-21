@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NMIXX · günlük streamler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#15101f; --panel:#1e1730; --line:#2e2543; --text:#f3eefc; --mute:#9d92b8;
+  --up:#6ee7b7; --down:#ff7a90; --bar:#3a2a63; --accent:#c9a7ff;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.5 Figtree,system-ui,sans-serif;
+  padding:clamp(20px,5vw,64px);max-width:1040px;margin-inline:auto}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+h1{font:800 clamp(56px,13vw,128px)/.85 "Bricolage Grotesque",sans-serif;letter-spacing:-.04em;margin:0}
+select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;
+  padding:10px 14px;font:inherit}
+select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.stats{display:flex;gap:clamp(24px,6vw,72px);flex-wrap:wrap;margin:48px 0 40px}
+.stat b{display:block;font:600 clamp(28px,5vw,44px)/1.1 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums}
+.stat span{color:var(--mute);font-size:14px}
+.d{font-size:14px;font-variant-numeric:tabular-nums}
+.up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--mute)}
+.head,.row{display:grid;grid-template-columns:2.2rem 1fr 7.5rem 7.5rem 5.5rem;gap:12px;align-items:center;padding:12px 14px}
+.head{color:var(--mute);font-size:13px;border-bottom:1px solid var(--line)}
+.row{border-radius:10px;position:relative;font-variant-numeric:tabular-nums;
+  background:linear-gradient(90deg,var(--bar) var(--w),transparent var(--w))}
+.row+.row{margin-top:2px}
+.row .t{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r{text-align:right}
+.i{color:var(--mute)}
+.row .daily{font-weight:600}
+.empty{color:var(--mute);padding:32px 14px}
+@media(max-width:640px){
+  .head,.row{grid-template-columns:1.8rem 1fr 6rem 4.5rem}
+  .total{display:none}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>NMIXX</h1>
+  <select id="day" aria-label="Tarih"></select>
+</header>
+
+<section class="stats" id="stats"></section>
+
+<div class="head"><span></span><span>Şarkı</span><span class="r total">Toplam</span><span class="r">Günlük</span><span class="r">Fark</span></div>
+<main id="rows"></main>
+
+<script>
+const H = {"2026-11-21": {"listeners": null, "followers": null, "tracks": {"DICE": {"total": 212712157, "daily": 44342}, "O.O": {"total": 207684086, "daily": 27516}, "Love Me Like This": {"total": 157898351, "daily": 39702}, "DASH": {"total": 90549456, "daily": 21179}, "Blue Valentine": {"total": 83881395, "daily": 118903}, "TANK": {"total": 69651524, "daily": 8336}, "Soñar (Breaker)": {"total": 63847412, "daily": 13235}, "Young, Dumb, Stupid": {"total": 57192316, "daily": 10776}, "KNOW ABOUT ME": {"total": 47439773, "daily": 31196}, "Heavy Serenade": {"total": 42080895, "daily": 124755}, "Run For Roses": {"total": 38834012, "daily": 17711}, "See that?": {"total": 31739722, "daily": 11771}, "COOL (Your rainbow)": {"total": 30879958, "daily": 6587}, "Passionfruit": {"total": 20139231, "daily": 6902}, "High Horse": {"total": 17838228, "daily": 12017}, "TIC TIC (feat. Pabllo Vittar)": {"total": 16396002, "daily": 21753}, "SPINNIN′ ON IT": {"total": 16304585, "daily": 20812}, "Papillon": {"total": 15396232, "daily": 14897}, "*Like Magic": {"total": 14520378, "daily": 7175}, "Crescendo": {"total": 13832162, "daily": 28510}, "LOUD": {"total": 13787871, "daily": 30167}, "BOOM": {"total": 13069389, "daily": 4666}, "*MEXE": {"total": 12255610, "daily": 7225}, "Love Is Lonely": {"total": 11796047, "daily": 10229}, "XOXO": {"total": 9801422, "daily": 4216}, "My Gosh": {"total": 9284814, "daily": 2682}, "PAXXWORD": {"total": 9247875, "daily": 2897}, "BEAT BEAT": {"total": 8859443, "daily": 5531}, "Ocean": {"total": 8726725, "daily": 8562}, "Phoenix": {"total": 8454572, "daily": 9636}, "ADORE U": {"total": 8289265, "daily": 13795}, "Funky Glitter Christmas": {"total": 8013675, "daily": 4420}, "Just Did It": {"total": 7912519, "daily": 2080}, "Break The Wall": {"total": 7471367, "daily": 4320}, "Reality Hurts": {"total": 6972615, "daily": 7672}, "Birthday Wish": {"total": 6840494, "daily": 150676}, "Red light sign, but we go": {"total": 6791214, "daily": 4623}, "PODIUM": {"total": 6699671, "daily": 6948}, "HOME": {"total": 6639811, "daily": 2002}, "Crush On You": {"total": 6269791, "daily": 7655}, "Slingshot (＜★)": {"total": 6017285, "daily": 4430}, "Shape of Love": {"total": 5908531, "daily": 7186}, "SICKUHH (Feat. Kid Milli)": {"total": 5765668, "daily": 2908}, "RICO": {"total": 5638880, "daily": 5453}, "Moving On": {"total": 5306417, "daily": 4818}, "Different Girl": {"total": 4950664, "daily": 7411}, "IDESERVEIT": {"total": 4921118, "daily": 6621}, "O.O Part 1 (Baila)": {"total": 4633147, "daily": 4595}, "Game Face": {"total": 4618416, "daily": 4973}, "Golden Recipe": {"total": 4367910, "daily": 3049}, "Superior": {"total": 4196995, "daily": 5889}, "O.O Part 2 (Superhero)": {"total": 3830795, "daily": 3864}, "*Come On": {"total": 2572201, "daily": 1625}, "O.O - Inst.": {"total": 2354002, "daily": 297}, "FEIFEI": {"total": 2305132, "daily": 1902}, "Soñar - Spanish Ver.": {"total": 2281476, "daily": 1292}, "TANK - Inst.": {"total": 2237548, "daily": 245}, "DICE (Inst.)": {"total": 1940011, "daily": 301}, "Caution": {"total": 1892468, "daily": 1932}, "RudE TaLK": {"total": 1849144, "daily": 32388}, "WHIP (JIWOO, KYUJIN)": {"total": 1720356, "daily": 33892}, "Kerosene": {"total": 1638438, "daily": 24655}, "Hot 'n Unbothered (SULLYOON, BAE)": {"total": 1525154, "daily": 24392}, "Sing to the Moon (LILY, HAEWON)": {"total": 1300409, "daily": 18874}, "COOL (Your rainbow) (Inst.)": {"total": 1208891, "daily": 266}, "*MEXE (feat. Cobrah & NMIXX)": {"total": 386591, "daily": 258}, "*MEXE (feat. NMIXX) - Miss Tacacá & LOFIHOUSEBOY Remix": {"total": 227625, "daily": 234}, "*Like Magic (Instrumental)": {"total": 154389, "daily": 169}, "FEIFEI - Instrumental": {"total": 152919, "daily": 75}}}};
+const days = Object.keys(H).sort();
+const fmt = n => n==null ? "–" : n.toLocaleString("tr-TR");
+const delta = (n,cls="") => {
+  if(n==null) return '<span class="flat d">–</span>';
+  const c = n>0?"up":n<0?"down":"flat", s = n>0?"+":"";
+  return `<span class="${c} d">${s}${fmt(n)}</span>`;
+};
+const sel = document.getElementById("day");
+days.slice().reverse().forEach(d => sel.add(new Option(d, d)));
+sel.onchange = () => render(sel.value);
+
+function render(day){
+  const cur = H[day], prev = H[days[days.indexOf(day)-1]];
+  const sum = o => Object.values(o.tracks).reduce((a,t)=>a+t.total,0);
+  const dd = (a,b) => (a==null||b==null) ? null : a-b;
+
+  document.getElementById("stats").innerHTML = [
+    ["Aylık dinleyici", cur.listeners, prev && dd(cur.listeners, prev.listeners)],
+    ["Takipçi", cur.followers, prev && dd(cur.followers, prev.followers)],
+    ["Toplam stream", sum(cur), prev && dd(sum(cur), sum(prev))],
+  ].map(([l,v,d]) => `<div class="stat"><span>${l}</span><b>${fmt(v)}</b>${delta(d)}</div>`).join("");
+
+  const list = Object.entries(cur.tracks).sort((a,b)=>b[1].daily-a[1].daily);
+  const max = list.length ? list[0][1].daily || 1 : 1;
+  document.getElementById("rows").innerHTML = list.length ? list.map(([name,t],i)=>{
+    const p = prev && prev.tracks[name];
+    const diff = p ? t.daily - p.daily : null;
+    return `<div class="row" style="--w:${(t.daily/max*100).toFixed(1)}%">
+      <span class="i">${i+1}</span><span class="t">${name}</span>
+      <span class="r total">${fmt(t.total)}</span><span class="r daily">${fmt(t.daily)}</span>
+      <span class="r">${delta(diff)}</span></div>`;
+  }).join("") : '<p class="empty">Bu tarih için veri yok.</p>';
+}
+render(days[days.length-1]);
+sel.value = days[days.length-1];
+</script>
+</body>
+</html>
