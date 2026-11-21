@@ -1,0 +1,31 @@
+name: Günlük güncelleme
+
+on:
+  schedule:
+    - cron: "30 6 * * *"   # her gün 06:30 UTC (TR saatiyle 09:30)
+  workflow_dispatch:        # elle de çalıştırabilirsin
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests beautifulsoup4
+      - run: python update.py
+        env:
+          ARTIST_ID: ${{ secrets.ARTIST_ID }}
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+      - name: Değişiklikleri kaydet
+        run: |
+          git config user.name "tracker-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data docs
+          git commit -m "update $(date -u +%F)" || exit 0
+          git push
